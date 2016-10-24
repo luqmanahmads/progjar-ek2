@@ -22,10 +22,10 @@ sock.bind(server_address)
 sock.listen(1)
 
 #loading user and pass from text file
-user_name = ["luqman", "ahmad","aditya","gunawan"]
-user_pass = ["123", "321","456","tralala"]
-user_auth = [0, 0, 0, 0]
-user_add = [0, 0, 0, 0]
+user_name = ["luqman", "ahmad","aditya","gunawan", "delia", "dedell", "adel"]
+user_pass = ["123", "321","456","tralala", "cantik", "lucu", "pelangi"]
+user_auth = [0, 0, 0, 0, 0, 0]
+user_add = [0, 0, 0, 0, 0, 0]	
 print >>sys.stderr, "Loading user information..."
 print >>sys.stderr, "Starting up server...\n"
 print >>sys.stderr, "WELCOME TO SIMPLE FTP SERVER"
@@ -85,7 +85,7 @@ def service(koneksi_client,alamat_client):
                         if command[0] in ['cd']:
                             if len(command) == 2:
                                 try:
-                                    os.chdir(cmd[1])
+                                    os.chdir(cmd[-1])
                                 except:
                                     message = "[ERROR] direktori tidak ada"
                                 else:
