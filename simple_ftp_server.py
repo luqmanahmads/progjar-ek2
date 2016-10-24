@@ -8,7 +8,6 @@ import os
 
 #global variable
 listCommand = ['cd', 'retr', 'list', 'put', 'del', 'exit', 'user', 'pass']
-
 #inisialisasi
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print >>sys.stderr, "Creating TCP socket successful..."
