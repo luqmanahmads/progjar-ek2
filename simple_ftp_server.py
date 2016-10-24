@@ -84,9 +84,9 @@ def service(koneksi_client,alamat_client):
                         if command[0] in ['cd']:
                             if len(command) == 2:
                                 try:
-                                    os.chdir(cmd[1])
+                                    os.chdir(command[1])
                                 except:
-                                    message = "[ERROR] direktori tidak ada"
+                                    message = "[ERR] direktori tidak ada"
                                 else:
                                     message = "[OK] direktori sekarang " + os.getcwd()
                             else:
