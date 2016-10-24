@@ -8,6 +8,7 @@ import os
 
 #global variable
 listCommand = ['cd', 'retr', 'list', 'put', 'del', 'exit', 'user', 'pass']
+
 #inisialisasi
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print >>sys.stderr, "Creating TCP socket successful..."
@@ -21,10 +22,10 @@ sock.bind(server_address)
 sock.listen(1)
 
 #loading user and pass from text file
-user_name = ["luqman", "ahmad"]
-user_pass = ["123", "321"]
-user_auth = [0, 0]
-user_add = [0, 0]
+user_name = ["luqman", "ahmad","aditya","gunawan", "delia", "dedell", "adel", "yon"]
+user_pass = ["123", "321","456","tralala", "cantik", "lucu", "pelangi", "ha"]
+user_auth = [0, 0, 0, 0, 0, 0, 0, 0]
+user_add = [0, 0, 0, 0, 0, 0, 0, 0]    
 print >>sys.stderr, "Loading user information..."
 print >>sys.stderr, "Starting up server...\n"
 print >>sys.stderr, "WELCOME TO SIMPLE FTP SERVER"
