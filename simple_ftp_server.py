@@ -8,6 +8,7 @@ import os
 
 #global variable
 listCommand = ['cd', 'retr', 'list', 'put', 'del', 'exit', 'user', 'pass']
+
 #inisialisasi
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print >>sys.stderr, "Creating TCP socket successful..."
@@ -21,8 +22,8 @@ sock.bind(server_address)
 sock.listen(1)
 
 #loading user and pass from text file
-user_name = ["luqman", "ahmad"]
-user_pass = ["123", "321"]
+user_name = ["luqman", "ahmad","aditya","gunawan"]
+user_pass = ["123", "321","456","tralala"]
 user_auth = [0, 0]
 user_add = [0, 0]
 print >>sys.stderr, "Loading user information..."
