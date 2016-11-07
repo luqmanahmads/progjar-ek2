@@ -19,3 +19,7 @@ RESPONSE :
 ==========
 [OK] [message]	-> request berhasil di proses
 [ERR] [message]	-> request gagal di proses
+
+
+[PROTOKOL CHAT SERVER]
+==============
