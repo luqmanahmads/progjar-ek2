@@ -3,7 +3,7 @@
 
 LOGIN
 ========
-- Format message
+- Format message : 
 	LOGIN spasi USERNAME spasi PASSWORD
 - Parameter
 	- username: alphanumerik (tanpa spasi)
@@ -11,12 +11,9 @@ LOGIN
 - Return
   - Request berhasil diproses: [OK] login berhasil
   - Request gagal diproses :
-    - Username belum tersedia 
-		  [ERR] Username belum tersedia
-    - Format message login tidak sesuai 
-		  [ERR] Format message tidak sesuai
-    - Password yang dimasukkan salah
-		  [ERR] Password yang dimasukkan salah
+    - Username belum tersedia : [ERR] Username belum tersedia
+    - Format message login tidak sesuai : [ERR] Format message tidak sesuai
+    - Password yang dimasukkan salah : [ERR] Password yang dimasukkan salah
 
 
 
