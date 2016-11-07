@@ -1,3 +1,25 @@
+[PROTOKOL CHAT SERVER]
+======================
+
+LOGIN
+========
+- Format message
+	LOGIN spasi USERNAME spasi PASSWORD
+- Parameter
+	- username: alphanumerik (tanpa spasi)
+	- password: alphanumerik (tanpa spasi)
+- Return
+  - Request berhasil diproses: [OK] login berhasil
+  - Request gagal diproses :
+    - Username belum tersedia 
+		  [ERR] Username belum tersedia
+    - Format message login tidak sesuai 
+		  [ERR] Format message tidak sesuai
+    - Password yang dimasukkan salah
+		  [ERR] Password yang dimasukkan salah
+
+
+
 [PROTOKOL FTP SERVER]
 =====================
 
