@@ -1,3 +1,5 @@
+[PROTOKOL FTP SERVER]
+
 AUTHENTICATION :
 ================
 USER [username] -> untuk memasukkan username
