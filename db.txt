@@ -8,3 +8,5 @@ delia
 012
 syuhada
 haha
+nama
+pass
