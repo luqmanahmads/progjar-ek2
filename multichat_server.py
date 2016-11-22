@@ -1,17 +1,16 @@
 import threading
 import socket
 import sys
-import time
 import string
+import time
 from multiprocessing import Process, Lock
-
 
 #inisialisasi
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print >>sys.stderr, "Creating TCP socket succfessful..."
 
 #binding socket to address:port
-server_address = ('localhost', 11004)
+server_address = ('10.151.36.250', 10020)
 print >>sys.stderr, "Binding to %s port %s successful..." % server_address
 sock.bind(server_address)
 
@@ -19,7 +18,7 @@ sock.bind(server_address)
 sock.listen(1)
 
 #commandlist
-listCommand = ['login', 'register', 'exit', 'whoami', 'online', 'send', 'broadcast', 'chatgroup', 'joingroup', 'creategroup','logout', 'check', 'checkall']
+listCommand = ['login', 'register', 'exit', 'whoami', 'online', 'send', 'broadcast', 'chatgroup', 'joingroup', 'creategroup','logout', 'check', 'checkpast']
 
 #global variable all user
 username = []
@@ -32,6 +31,15 @@ usersock = []
 groupname = []
 grouppass = []
 groupmember = []
+
+#global variable untuk message
+msgsender = []
+msgrecipient = []
+msgtype = []
+msgstatus = []
+msgdate = []
+msgtime = []
+msgcontent = []
 
 #fungsi untuk memperbarui userindex
 def renew(index):
@@ -50,9 +58,9 @@ def logout(client_username):
         renew(sock_index)        
         print "online : ", useraddr        
         print "user status : ", userindex        
-        return "SUKSES : logged out\n"
+        return "SUKSES 100\n"
     else:
-        return "GAGAL\n"
+        return "GAGAL 200\n"
 
 #fungsi untuk login user
 def login(client_username, client_password, koneksi_client, alamat_client):
@@ -67,18 +75,18 @@ def login(client_username, client_password, koneksi_client, alamat_client):
                 
                 print "online : ", useraddr
                 print "user status : ", userindex
-                return "SUKSES : login berhasil\n"                
+                return "SUKSES 100\n"                
             else:
-                return "GAGAL : password salah\n"
+                return "GAGAL 242\n"
         else:
-            return "GAGAL : anda sudah login\n"
+            return "GAGAL 243\n"
     else:
-        return "GAGAL : username tidak ditemukan\n"
+        return "GAGAL 241\n"
 
 #fungsi untuk register user
 def register(reg_username, reg_password, reg_retype_password):
     if reg_username in username:
-        return "GAGAL : username sudah terpakai\n"
+        return "GAGAL 231\n"
     else:
         if reg_password == reg_retype_password:
             f = open("db.txt", "a")
@@ -90,9 +98,9 @@ def register(reg_username, reg_password, reg_retype_password):
             userpass.append(reg_password)
             userindex.append(-1)
             
-            return "SUKSES : berhasil membuat akun"
+            return "SUKSES 100\n"
         else:
-            return "GAGAL : password tidak cocok"
+            return "GAGAL 232\n"
 
 #fungsi auntentikasi
 def authenticate(alamat_client):
@@ -103,38 +111,123 @@ def authenticate(alamat_client):
 
 #fungsi untuk mengirim pesan private
 def kirim(username_pengirim, username_penerima, pesan):
+    local_date = time.strftime("%Y/%m/%d", time.localtime(time.time()))
+    local_time = time.strftime("%H:%M:%S", time.localtime(time.time()))
+        
     if username_penerima in username:
         index = username.index(username_penerima)
         sock_index = userindex[index]    
-        if sock_index > -1:
-            usersock[sock_index].send("["+username_pengirim+"] "+pesan+"\n")
-            return "SUKSES : pesan terkirim\n"
-        else:
-            return "GAGAL : penerima tidak online\n"
+    
+        msgsender.append(username_pengirim)
+        msgrecipient.append(username_penerima)
+        msgtype.append('1')            
+        msgstatus.append('1')
+        msgdate.append(local_date)
+        msgtime.append(local_time)
+        msgcontent.append(pesan)            
+        
+        line = username_pengirim + " " + username_penerima + " 1 1 " + local_date + " " + local_time  
+        f = open("db_message.txt", "a")
+        f.write(line+"\n")
+        pesan = pesan.strip()        
+        f.write(pesan+"\n")
+        f.close()
+    
+        return "SUKSES 100\n"
     else:
-        return "GAGAL : username penerima belum terdaftar\n"
+        return "GAGAL 251\n"
         
 #fungsi untuk mengirim pesan broadcast
 def broadcast(username_pengirim, pesan):
-    for i in range(len(usersock)):
-        usersock[i].send("[broadcast:"+username_pengirim+"] "+pesan+"\n")
-    return "SUKSES : pesan terkirim\n"
+    local_date = time.strftime("%Y/%m/%d", time.localtime(time.time()))
+    local_time = time.strftime("%H:%M:%S", time.localtime(time.time()))
+    pengirim = "broadcast:"+username_pengirim
+    f = open("db_message.txt", "a")    
+    for i in range(len(username)):
+        if username_pengirim != username[i]:
+            msgsender.append(pengirim)
+            msgrecipient.append(username[i])
+            msgtype.append('3')
+            msgstatus.append('1')
+            msgdate.append(local_date)
+            msgtime.append(local_time)
+            msgcontent.append(pesan)            
+            
+            line = pengirim + " " + username[i] + " 3 1 " + local_date + " " + local_time  
+            f.write(line+"\n")
+            pesan = pesan.strip()
+            f.write(pesan+"\n")
+    f.close()
+    return "SUKSES 100\n"
 
 #fungsi untuk mengirim pesan ke group
 def chatgroup(username_pengirim, group_penerima, pesan):
+    local_date = time.strftime("%Y/%m/%d", time.localtime(time.time()))
+    local_time = time.strftime("%H:%M:%S", time.localtime(time.time()))
+    
     if group_penerima in groupname:
         indexGroup = groupname.index(group_penerima)
         if username_pengirim in groupmember[indexGroup]:
-            for user in groupmember[indexGroup]:
-                indexUser = username.index(user)
-                indexSock = userindex[indexUser]
-                if indexSock > -1:
-                    usersock[indexSock].send("["+group_penerima+":"+username_pengirim+"] "+pesan+"\n")
-            return "SUKSES : pesan terkirim\n"
+            index = groupname.index(group_penerima)
+            pengirim = group_penerima + ":" + username_pengirim
+            f = open("db_message.txt", "a")            
+            for i in range(len(groupmember[index])):
+                if username_pengirim != groupmember[index][i]:                
+                    msgsender.append(pengirim)
+                    msgrecipient.append(groupmember[i])
+                    msgtype.append('2')            
+                    msgstatus.append('1')
+                    msgdate.append(local_date)
+                    msgtime.append(local_time)
+                    msgcontent.append(pesan)            
+                    
+                    line = pengirim + " " + groupmember[index][i] + " 2 1 " + local_date + " " + local_time  
+                    
+                    f.write(line+"\n")
+                    pesan = pesan.strip()
+                    f.write(pesan+"\n")
+            f.close()
+            return "SUKSES 100\n"
         else:
-            return "GAGAL : anda bukan anggota group\n"
+            return "GAGAL 282\n"
     else:
-        return "GAGAL : nama group tidak terdaftar\n"
+        return "GAGAL 281\n"
+
+def check(penerima):
+    for i in range(len(msgrecipient)):
+        print msgrecipient
+        print msgstatus
+        
+        if msgrecipient[i] == penerima and msgstatus[i] == '1':
+            index = username.index(penerima)
+            sockindex = userindex[index]
+            
+            pesan = msgdate[i] + " " + msgtime[i] + " " + msgsender[i] + " " + msgcontent[i] + "\n"
+            usersock[sockindex].send(pesan)
+            
+            msgstatus[i] = '2'
+            
+    f = open("db_message.txt", "w")
+    for i in range(len(msgsender)):
+        line = msgsender[i]+" "+msgrecipient[i]+" "+msgtype[i]+" "+msgstatus[i]+" "+msgdate[i]+" "+msgtime[i]+"\n"
+        f.write(line)
+        f.write(msgcontent[i]+"\n")
+    f.close()
+    return "SUKSES 100\n"
+
+def checkpast(penerima):
+    for i in range(len(msgrecipient)):
+        print msgrecipient
+        print msgstatus
+        
+        if msgrecipient[i] == penerima and msgstatus[i] == '2':
+            index = username.index(penerima)
+            sockindex = userindex[index]
+            
+            pesan = msgdate[i] + " " + msgtime[i] + " " + msgsender[i] + " " + msgcontent[i] + "\n"
+            usersock[sockindex].send(pesan)
+            
+    return "SUKSES 100\n"
 
 #fungsi untuk bergabung dengan group
 def joingroup(client_username, group, password):
@@ -142,7 +235,7 @@ def joingroup(client_username, group, password):
         indexGroup = groupname.index(group)       
         if password == grouppass[indexGroup]:
             if client_username in groupmember[indexGroup]:
-                return "GAGAL : anda sudah menjadi bagian dari grup\n"
+                return "GAGAL 291\n"
             else:
                 groupmember[indexGroup].append(client_username)
                 f = open("db_group.txt", "w")
@@ -153,15 +246,15 @@ def joingroup(client_username, group, password):
                         f.write(groupmember[i][j]+"\n")
                     f.write("*\n")
                 f.close()
-                return "SUKSES : bergabung ke grup\n"
+                return "SUKSES 100\n"
         else:
-            return "GAGAL : password group salah\n"
+            return "GAGAL 292\n"
     else:
-        return "GAGAL : grup tidak ada\n"
+        return "GAGAL 293\n"
 
 def creategroup(group, password):
     if group in groupname:
-        return "GAGAL : nama group sudah terpakai\n"        
+        return "GAGAL 271\n"        
     else:
         groupname.append(group)
         grouppass.append(password)
@@ -175,7 +268,7 @@ def creategroup(group, password):
                 f.write(groupmember[i][j]+"\n")
             f.write("*\n")
         f.close()
-        return "SUKSES : membuat group\n"
+        return "SUKSES 100\n"
 
 #fungsi untuk inisialisasi : loading user, dll
 def initialize():
@@ -215,9 +308,29 @@ def initializeGroup():
                 newList.append(line)
                 counter = counter + 1
     f.close()
-    return 1              
+    return 1  
 
-#fungsi untuk melayani servis client
+def initializeMessage():
+    print "loading message database.."
+    counter = 0
+    with open("db_message.txt") as f:
+        for line in f:
+            if counter % 2 == 0:
+                line = line.strip().split()
+                msgsender.append(line[0])
+                msgrecipient.append(line[1])
+                msgtype.append(line[2])
+                msgstatus.append(line[3])
+                msgdate.append(line[4])
+                msgtime.append(line[5])
+            else:
+                line = line.strip()
+                msgcontent.append(line)
+            counter = counter + 1
+    f.close()
+    return 1
+
+
 def service(koneksi_client, alamat_client):
     try:
         #print >>sys.stderr, "ada koneksi dari client", alamat_client
@@ -239,17 +352,17 @@ def service(koneksi_client, alamat_client):
                         client_password = command[2]
                         message = login(client_username, client_password, koneksi_client, alamat_client)
                     else:
-                        message = "GAGAL : syntax error\n"
+                        message = "GAGAL 210\n"
                 elif command[0] in ['register']:
                     if len(command) == 4:
                         message = register(command[1], command[2], command[3])
                     else:
-                        message = "GAGAL : syntax error\n"    
+                        message = "GAGAL 210\n"    
                     
                 elif command[0] in ['exit']:
                     break
                 else:
-                    if command[0] in ['logout', 'send', 'online', 'whoami', 'broadcast', 'chatgroup', 'joingroup', 'creategroup']:
+                    if command[0] in ['logout', 'send', 'online', 'whoami', 'broadcast', 'chatgroup', 'joingroup', 'creategroup', 'check', 'checkpast']:
                         if authenticate(alamat_client) == 1:
                             if command[0] in ['send']:
                                 if len(command) > 2:
@@ -259,18 +372,18 @@ def service(koneksi_client, alamat_client):
                                             pesan = pesan + command[i] + " "
                                     message = kirim(client_username, command[1], pesan)
                                 else:
-                                    message = "GAGAL : penggunaan [send] [user_pengirim] [pesan]\n"
+                                    message = "GAGAL 210\n"
                             if command[0] in ['online']:
                                 if len(command) == 1:
                                     for i in range(len(userindex)):
                                         if userindex[i] > -1:
                                             koneksi_client.send(username[i]+"\n")
-                                    message = "SUKSES\n"
+                                    message = "SUKSES 100\n"
                             if command[0] in ['whoami']:
-                                koneksi_client.send("login as : "+client_username+"\n")
-                                koneksi_client.send("address : "+alamat_client[0]+"\n")
-                                koneksi_client.send("port : "+str(alamat_client[1])+"\n")
-                                message = "SUKSES\n"
+                                koneksi_client.send(client_username+"\n")
+                                koneksi_client.send(alamat_client[0]+"\n")
+                                koneksi_client.send(str(alamat_client[1])+"\n")
+                                message = "SUKSES 100\n"
                             
                             if command[0] in ['broadcast']:
                                 if len(command) > 1:
@@ -280,7 +393,7 @@ def service(koneksi_client, alamat_client):
                                             pesan = pesan + command[i] + " "
                                     message = broadcast(client_username, pesan)
                                 else:
-                                    message = "GAGAL : syntax error\n"
+                                    message = "GAGAL 210\n"
                                     
                             if command[0] in ['chatgroup']:
                                 if len(command) > 2:
@@ -289,28 +402,41 @@ def service(koneksi_client, alamat_client):
                                         if i >=2:
                                             pesan = pesan + command[i] + " "
                                 message = chatgroup(client_username, command[1], pesan)
+                            
+                            if command[0] in ['check']:
+                                if len(command) == 1:
+                                    message = check(client_username)
+                                else:
+                                    message = "GAGAL 210\n"
+                            
+                            if command[0] in ['checkpast']:
+                                if len(command) == 1:
+                                    message = checkpast(client_username)
+                                else:
+                                    message = "GAGAL 210\n"
+                            
                             if command[0] in ['joingroup']:
                                 if len(command) == 3:
                                     message = joingroup(client_username, command[1], command[2])
                                 else:
-                                    message = "GAGAL : syntax error\n"
+                                    message = "GAGAL 210\n"
                             
                             if command[0] in ['creategroup']:
                                 if len(command) == 3:
                                     message = creategroup(command[1], command[2])
                                 else:
-                                    message = "GAGAL : syntax error\n"
+                                    message = "GAGAL 210\n"
                             if command[0] in ['logout']:
                                 if len(command) == 1:
                                     message = logout(client_username)
                                 else:
-                                    message = "GAGAL : syntax error\n"
+                                    message = "GAGAL 210\n"
                         else:
-                            message = "GAGAL : anda tidak terautentikasi\n"
+                            message = "GAGAL 220\n"
                     else:
-                        message = "GAGAL : command error\n"
+                        message = "GAGAL 200\n"
             else:
-                message = "GAGAL : command tidak tersedia\n"
+                message = "GAGAL 200\n"
             koneksi_client.send(message)
     finally:
         koneksi_client.close()
@@ -328,7 +454,15 @@ print "group list : ", groupname
 #print groupmember[0]
 #print groupmember[1]
 
-print "\n==============================="
+#load message database
+initializeMessage()
+print "sender : ", msgsender
+print "recipient : ", msgrecipient
+print "type : ", msgtype
+print "message status : ", msgstatus
+print "message list : ", msgcontent
+
+print "\n================================"
 print "WELCOME TO MULTICHAT SERVER EK2"
 print "==============================="
 
