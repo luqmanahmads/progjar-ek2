@@ -10,7 +10,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print >>sys.stderr, "Creating TCP socket succfessful..."
 
 #binding socket to address:port
-server_address = ('10.151.36.250', 10020)
+server_address = ('localhost', 11003)
 print >>sys.stderr, "Binding to %s port %s successful..." % server_address
 sock.bind(server_address)
 
@@ -174,7 +174,7 @@ def chatgroup(username_pengirim, group_penerima, pesan):
             for i in range(len(groupmember[index])):
                 if username_pengirim != groupmember[index][i]:                
                     msgsender.append(pengirim)
-                    msgrecipient.append(groupmember[i])
+                    msgrecipient.append(groupmember[index][i])
                     msgtype.append('2')            
                     msgstatus.append('1')
                     msgdate.append(local_date)
@@ -209,6 +209,12 @@ def check(penerima):
             
     f = open("db_message.txt", "w")
     for i in range(len(msgsender)):
+        print msgsender[i]
+        print msgrecipient[i]
+        print msgtype[i]
+        print msgstatus[i]
+        print msgdate[i]
+        print msgtime[i]
         line = msgsender[i]+" "+msgrecipient[i]+" "+msgtype[i]+" "+msgstatus[i]+" "+msgdate[i]+" "+msgtime[i]+"\n"
         f.write(line)
         f.write(msgcontent[i]+"\n")
