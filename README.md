@@ -1,8 +1,8 @@
-[PROTOKOL CHAT SERVER]
+PROTOKOL CHAT SERVER
 ======================
 
-SIGN UP
-=======
+Sign up
+-------
 - Format message :
 	SIGNUP spasi USERNAME spasi PASSWORD
 - Parameter
@@ -16,8 +16,8 @@ SIGN UP
 		- Format message sign up tidak sesuai :
 			[ERR] Format message tidak sesuai
 
-LOGIN
-========
+Login
+-----
 - Format message : 
 	LOGIN spasi USERNAME spasi PASSWORD
 - Parameter
@@ -124,15 +124,15 @@ KELUAR DARI GRUP
 			[ERR] Anda belum bergabung dalam grup
 
 
-[PROTOKOL FTP SERVER]
-=====================
+PROTOKOL FTP SERVER
+===================
 
-AUTHENTICATION :
+Authentication :
 ================
 USER [username] -> untuk memasukkan username
 PASS [password] -> untuk memasukkan password
 
-REQUEST :
+Request :
 =========
 LIST 			-> untuk melihat daftar file pada direktori
 RETR [nama_file]	-> untuk mendownload file bernama nama_file
@@ -141,7 +141,7 @@ PUT [nama_file]		-> untuk upload file bernama nama_file
 DEL [nama_file]		-> untuk menghapus file di server
 EXIT			-> untuk menutup koneksi denggan server
 
-RESPONSE :
+Response :
 ==========
 [OK] [message]	-> request berhasil di proses
 [ERR] [message]	-> request gagal di proses
