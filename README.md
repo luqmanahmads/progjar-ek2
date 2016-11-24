@@ -1,3 +1,11 @@
+DESKRIPSI UMUM
+==============
+Merupakan repositori kelompok 2 dalam mata kuliah Pemrograman Jaringan E Teknik Informatika ITS 2016/2017 untuk dipergunakan Sebaik - baiknya
+Repository ini terdiri dari :
+1. Simple FTP server -> simple_ftp_server.py
+2. Multichat Server Kelompok 2 -> multichat_server.py
+3. GUI Client dari Chat Server Kelompok 3 -> client-ek3.py
+
 PROTOKOL CHAT SERVER
 ======================
 
@@ -33,15 +41,15 @@ Login
 		- Password yang dimasukkan salah : 
     			[ERR] Password yang dimasukkan salah
 			
-LOGOUT
-======
+Logout
+------
 - Format message :
 	LOGOUT
 - Return
 	- [OK] Logout berhasil
 
-PRIVATE MESSAGE
-===============
+Private Message
+---------------
 - Format message : 
 	SEND spasi USERNAME_PENERIMA spasi MESSAGE
 - Parameter
@@ -55,8 +63,8 @@ PRIVATE MESSAGE
 		- Format message private message tidak sesuai : 
 			[ERR] format message tidak sesuai
 
-MEMBUAT GRUP
-===========
+Membuat Group
+-------------
 - Format message :
 	CREATEGROUP spasi NAMA_GRUP spasi PASSWORD_GRUP
 - Parameter
@@ -71,8 +79,8 @@ MEMBUAT GRUP
 		- Format message tidak sesuai
 			[ERR] Format message tidak sesuai
 
-JOIN GRUP
-=========
+Join Group
+----------
 - Format message : 
 	JOIN spasi NAMA_GRUP spasi PASSWORD_GRUP
 - Parameter
@@ -90,8 +98,8 @@ JOIN GRUP
 		- Password grup tidak sesuai : 
 			[ERR] Password grup salah
 			
-MENGIRIM PESAN KE GRUP
-=====================
+Mengirim Pesan ke Group
+-----------------------
 - Format message
 	 spasi NAMA_GROUP spasi MESSAGE
 - Parameter
@@ -107,8 +115,8 @@ MENGIRIM PESAN KE GRUP
 		- Pengirim belum tergabung dalam grup:
 			[ERR] Anda belum bergabung dalam grup
 
-KELUAR DARI GRUP
-================
+Keluar dari Group
+----------------
 - Format message :
 	LEAVE spasi NAMA_GROUP
 - Parameter
@@ -127,13 +135,13 @@ KELUAR DARI GRUP
 PROTOKOL FTP SERVER
 ===================
 
-Authentication :
-================
+Authentication
+--------------
 USER [username] -> untuk memasukkan username
 PASS [password] -> untuk memasukkan password
 
-Request :
-=========
+Request
+-------
 LIST 			-> untuk melihat daftar file pada direktori
 RETR [nama_file]	-> untuk mendownload file bernama nama_file
 CD [nama_direktori]	-> untuk pindah direktori ke nama_direktori
@@ -141,8 +149,8 @@ PUT [nama_file]		-> untuk upload file bernama nama_file
 DEL [nama_file]		-> untuk menghapus file di server
 EXIT			-> untuk menutup koneksi denggan server
 
-Response :
-==========
+Response
+--------
 [OK] [message]	-> request berhasil di proses
 [ERR] [message]	-> request gagal di proses
 
