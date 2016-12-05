@@ -10,7 +10,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print >>sys.stderr, "Creating TCP socket succfessful..."
 
 #binding socket to address:port
-server_address = ('localhost', 11003)
+server_address = ('10.151.36.250', 10020)
 print >>sys.stderr, "Binding to %s port %s successful..." % server_address
 sock.bind(server_address)
 
