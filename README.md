@@ -1,11 +1,12 @@
 DESKRIPSI UMUM
 ==============
 Merupakan repositori kelompok 2 dalam mata kuliah Pemrograman Jaringan E Teknik Informatika ITS 2016/2017 untuk dipergunakan Sebaik - baiknya
+
 Repository ini terdiri dari :
 
-1. Simple FTP server -> simple_ftp_server.py
-2. Multichat Server Kelompok 2 -> multichat_server.py
-3. GUI Client dari Chat Server Kelompok 3 -> client-ek3.py
+1. Simple FTP server
+2. Multichat Server Kelompok 2
+3. GUI Client dari Chat Server Kelompok 3
 
 PROTOKOL CHAT SERVER
 ======================
